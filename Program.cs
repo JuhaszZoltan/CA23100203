@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace CA23100203
@@ -9,8 +10,33 @@ namespace CA23100203
     {
         static void Main()
         {
-            List<Karakter> bank = Beolvas(@"..\..\..\src\bank.txt");
+            var bank = Beolvas(@"..\..\..\src\bank.txt");
             Console.WriteLine($"5. feladat: Karakterek száma: {bank.Count}");
+
+            char inputChr;
+            bool isParsed;
+            do
+            {
+                Console.Write("6. feladat: Kérek egy angol nagyvetűt: ");
+                isParsed = char.TryParse(Console.ReadLine(), out inputChr);
+            } while (!isParsed || inputChr < 65 || inputChr > 90);
+
+            Console.Write("7. feladat: ");
+            var megj = bank.SingleOrDefault(k => k.Betu == inputChr);
+            Console.WriteLine(
+                megj is null 
+                ? "Nincs ilyen karakter a bakban!" 
+                : $"\n{megj.KarakterKep}");
+
+            var dekodolando = Beolvas(@"..\..\..\src\dekodol.txt");
+
+            Console.WriteLine("9. feladat: Dekódolás");
+            foreach (var k in dekodolando)
+            {
+                var bk = bank.FirstOrDefault(b => b.Felismer(k));
+                Console.Write(bk is null ? "?" : bk.Betu);
+            }
+            Console.Write('\n'); 
         }
 
         static List<Karakter> Beolvas(string utvonal)
